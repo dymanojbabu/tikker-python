@@ -83,6 +83,24 @@ def read_and_update_csv(file_path):
                         row.append('')
                     row[5] = roe_value    
 
+                # Book Value Row is 7 and html index current price 1 and book value 4
+                if row[7].strip(): 
+                    print(f"Skipping {row[1]} as Book Value already exists: {row[7]}")
+                else:
+                    roe_value1 = extract_roe_from_url(url, 1)
+                    roe_value2 = extract_roe_from_url(url, 4)
+                    try:
+                        roe_value1 = float(roe_value1.replace(',', ''))
+                        roe_value2 = float(roe_value2.replace(',', ''))
+                        if roe_value2 != 0 & roe_value1 !=0:
+                            roe_value3 = roe_value1 / roe_value2
+                            print(roe_value3)    
+                            while len(row) < 8:
+                                row.append('')
+                            row[7] = roe_value3
+                    except ValueError:
+                        print(f"Error converting values for {row[1]}: {roe_value1}, {roe_value2}")
+                        
         # Move the file pointer to the beginning of the file
         file.seek(0)
         csv_writer = csv.writer(file)
